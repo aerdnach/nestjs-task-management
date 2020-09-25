@@ -22,9 +22,11 @@ export class TaskRepository extends Repository<Task> {
         }
 
         if (search) {
-            query.andWhere('(task.title LIKE :search OR task.description LIKE :search)', { search })
+            query.andWhere('(task.title ILIKE :search OR task.description iLIKE :search)', { search: `%${search}%` })
         }
 
+        this.logger.debug(JSON.stringify(query.getQueryAndParameters()))
+        
         try {
             const tasks = await query.getMany()
             return tasks
